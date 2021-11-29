@@ -29,7 +29,7 @@ def run():
     )
 
     train_data_loader = torch.utils.data.DataLoader(
-        train_dataset, batch_size=config.TRAIN_BATCH_SIZE, num_workers=4
+        train_dataset, batch_size=config.TRAIN_BATCH_SIZE, num_workers=config.TRAIN_WORKER_SIZE
     )
 
     valid_dataset = dataset.BERTDataset(
@@ -37,7 +37,7 @@ def run():
     )
 
     valid_data_loader = torch.utils.data.DataLoader(
-        valid_dataset, batch_size=config.VALID_BATCH_SIZE, num_workers=1
+        valid_dataset, batch_size=config.VALID_BATCH_SIZE, num_workers=VALIDATION_WORKER_SIZE
     )
 
     device = torch.device(config.DEVICE)
@@ -73,7 +73,7 @@ def run():
         outputs, targets = engine.eval_fn(valid_data_loader, model, device)
         outputs = np.array(outputs) >= 0.5
         accuracy = metrics.accuracy_score(targets, outputs)
-        print(f"Accuracy Score = {accuracy}")
+        #print(f"Accuracy Score = {accuracy}")
         if accuracy > best_accuracy:
             torch.save(model.state_dict(), config.MODEL_PATH)
             best_accuracy = accuracy
